@@ -31,4 +31,12 @@ android:layout_height="match_parent">
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true" />
 
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/imageView"
+    android:text="お気に入り"
+    android:id="@+id/favorite_button"/>
+
+
 </RelativeLayout>

@@ -23,6 +23,7 @@ import android.util.Base64  //追加する
 import android.widget.ListView
 
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mToolbar: Toolbar
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     byteArrayOf()
                 }
+            val favorable:Int = (map["favorable"]?:"") as Int
 
             val answerArrayList = ArrayList<Answer>()
             val answerMap = map["answers"] as Map<String, String>?
@@ -59,13 +61,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val answerBody = temp["body"] ?: ""
                     val answerName = temp["name"] ?: ""
                     val answerUid = temp["uid"] ?: ""
-                    val answer = Answer(answerBody, answerName, answerUid, key)
+                    val answer = Answer(answerBody, answerName, answerUid, key,favorable)
                     answerArrayList.add(answer)
+                    val answerfavorable = temp["favorable"]?:""
                 }
             }
 
+
             val question = Question(title, body, name, uid, dataSnapshot.key ?: "",
-                mGenre, bytes, answerArrayList)
+                mGenre, bytes, answerArrayList, favorable)
             mQuestionArrayList.add(question)
             mAdapter.notifyDataSetChanged()
         }
@@ -85,8 +89,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val answerBody = temp["body"] ?: ""
                             val answerName = temp["name"] ?: ""
                             val answerUid = temp["uid"] ?: ""
-                            val answer = Answer(answerBody, answerName, answerUid, key)
+                            val answerfavorable = temp["favorable"]?:"" as Int
+                            val answer = Answer(answerBody, answerName, answerUid, key,
+                                answerfavorable as Int
+                            )
                             question.answers.add(answer)
+
                         }
                     }
 
