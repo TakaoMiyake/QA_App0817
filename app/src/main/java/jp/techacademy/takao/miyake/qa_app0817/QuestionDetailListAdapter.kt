@@ -3,10 +3,14 @@ package jp.techacademy.takao.miyake.qa_app0817
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 
@@ -46,7 +50,7 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
         return 0
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var convertView = convertView
 
         if (getItemViewType(position) == TYPE_QUESTION) {
@@ -68,6 +72,32 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
                 val imageView = convertView.findViewById<View>(R.id.imageView) as ImageView
                 imageView.setImageBitmap(image)
             }
+            val favorableIndicator = convertView.findViewById<View>(R.id.favorable_button) as Button
+
+            favorableIndicator.setOnClickListener {
+                var checkfavorable: String = "No"
+
+                Log.d("ANDROID","クリックされた")
+                //checkfavorable = favorableIndicator
+
+
+            }
+         /*   fun buttonEffect(button: View) {
+                button.setOnTouchListener { v, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
+                            v.invalidate()
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            v.background.clearColorFilter()
+                            v.invalidate()
+                        }
+                    }
+                    false
+                }
+            }*/
+
         } else {
             if (convertView == null) {
                 convertView = mLayoutInflater!!.inflate(R.layout.list_answer, parent, false)!!
@@ -84,6 +114,11 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
             nameTextView.text = name
         }
 
+
+
+
         return convertView
     }
+
+
 }
