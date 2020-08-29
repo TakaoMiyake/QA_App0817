@@ -3,12 +3,15 @@ package jp.techacademy.takao.miyake.qa_app0817
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.list_question_detail.*
 
 import java.util.ArrayList
 
@@ -55,6 +58,7 @@ class QuestionsListAdapter(context: Context) : BaseAdapter() {
             val imageView = convertView.findViewById<View>(R.id.imageView) as ImageView
             imageView.setImageBitmap(image)
         }
+
 
         return convertView
     }

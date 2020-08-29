@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.util.Base64  //追加する
 import android.widget.ListView
+import android.util.Log
 
 
 
@@ -51,7 +52,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     byteArrayOf()
                 }
-            val favorable:Int = (map["favorable"]?:"") as Int
+            val favorable= map["favorable"]?:""
+
+            //Log.d("ANDROID","Name= " + name.toString())
+            //Log.d("ANDROID","favorable= " + favorable.toString())
 
             val answerArrayList = ArrayList<Answer>()
             val answerMap = map["answers"] as Map<String, String>?
@@ -61,15 +65,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val answerBody = temp["body"] ?: ""
                     val answerName = temp["name"] ?: ""
                     val answerUid = temp["uid"] ?: ""
-                    val answer = Answer(answerBody, answerName, answerUid, key,favorable)
+
+                    val answerfavorable : String? = temp["answerfavorable"]?:""
+                    val answer = Answer(answerBody, answerName, answerUid, key, favorable )
                     answerArrayList.add(answer)
-                    val answerfavorable = temp["favorable"]?:""
+                    Log.d("ANDROID","answerName= " + answerName.toString())
                 }
             }
 
 
             val question = Question(title, body, name, uid, dataSnapshot.key ?: "",
                 mGenre, bytes, answerArrayList, favorable)
+
+
+
+
             mQuestionArrayList.add(question)
             mAdapter.notifyDataSetChanged()
         }
@@ -89,10 +99,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val answerBody = temp["body"] ?: ""
                             val answerName = temp["name"] ?: ""
                             val answerUid = temp["uid"] ?: ""
-                            val answerfavorable = temp["favorable"]?:"" as Int
-                            val answer = Answer(answerBody, answerName, answerUid, key,
-                                answerfavorable as Int
-                            )
+                            val answerfavorable=temp["answerfavorable"]?:""
+                            val answer = Answer(answerBody, answerName, answerUid, key,answerfavorable)
+
+                            Log.d("ANDROID","answerName= " + answerName.toString())
+
                             question.answers.add(answer)
 
                         }

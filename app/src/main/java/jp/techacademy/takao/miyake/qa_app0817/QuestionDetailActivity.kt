@@ -15,14 +15,19 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_question_detail.*
+//import onclickを追加する。
 
 import java.util.HashMap
 import android.support.v4.view.ViewCompat.setScaleX
 import android.support.v4.view.ViewCompat.setScaleY
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.widget.Button
+import kotlinx.android.synthetic.main.list_question_detail.*
 
 
 class QuestionDetailActivity : AppCompatActivity() {
@@ -30,6 +35,10 @@ class QuestionDetailActivity : AppCompatActivity() {
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
+    //lateinit var favorable: String
+    //lateinit var answerfavorable: String
+    //lateinit var favorableUidAnswer: String
+
 
 
     private val mEventListener = object : ChildEventListener {
@@ -48,9 +57,10 @@ class QuestionDetailActivity : AppCompatActivity() {
             val body = map["body"] ?: ""
             val name = map["name"] ?: ""
             val uid = map["uid"] ?: ""
-            val favorable = map["favorable"] as Int
+            val answerfavorable = map["answerfavorable"]?:""
+            val favorableUidAnswer = map["favorableUidAnswer"]
 
-            val answer = Answer(body, name, uid, answerUid, favorable)
+            val answer = Answer(body, name, uid, answerUid,answerfavorable)
             mQuestion.answers.add(answer)
             mAdapter.notifyDataSetChanged()
         }
@@ -103,35 +113,13 @@ class QuestionDetailActivity : AppCompatActivity() {
             }
         }
 
+
+
         val dataBaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
     }
-    fun onClick(v: View?) {
-
-        //data["favorable"]=FirebaseAuth.getInstance().currentUser!!.uid
-        //if ( favorable == 0) {
 
 
-        //}
-
-
-        class Favorable_PushButton : Button {
-            constructor(context: Context) : super(context) {}
-
-            constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
-
-            override fun setPressed(pressed: Boolean) {
-                if (pressed) {
-                    this.setScaleY(0.92f)
-                    this.setScaleX(0.96f)
-                } else {
-                    this.setScaleY(1.0f)
-                    this.setScaleX(1.0f)
-                }
-                super.setPressed(pressed)
-            }
-
-        }
-    }
 }
+
