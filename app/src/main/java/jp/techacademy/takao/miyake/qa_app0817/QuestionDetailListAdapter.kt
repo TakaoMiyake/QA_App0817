@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.util.Log
 import android.widget.Button
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.util.HashMap
@@ -27,12 +27,14 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
 
     private var fuserid: Int = 0
     private var fuseridQuestionid : Int = 0
-    private lateinit var mQuestion: Question
+    private var mQuestion: Question? = null
+
+    private lateinit var answerUid: String
     private lateinit var mAnswer: Answer
 
     private lateinit var mAnswerRef: DatabaseReference
 
-
+    private var dataSnapshot: DataSnapshot? = null
 
     init {
         mLayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -71,23 +73,37 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
             }
             val body = mQustion.body
             val name = mQustion.name
+            val usersid: String? = mQuestion?.questionUid
 
             var mAnswer: Answer? = null
 
-            val answer_name: String = mAnswer?.name.toString()
+            var answerfavorable: String = mAnswer?.answerfavorable.toString()
+
+            var answer_name: String = mAnswer?.name.toString()
+
+//            val map = dataSnapshot!!.value as Map<String, String>
+
+//            val answerUid = dataSnapshot!!.key ?: ""
 
             //Firebaseからの読み込み用を設定
             val dataBaseReference = FirebaseDatabase.getInstance().reference
             val fuserIdReference = dataBaseReference.child(FavoritePATH).child(fuserid.toString())
             val fuserIdQuestionRef = dataBaseReference.child(F_userPATH).child(F_userquestionPATH).child(fuseridQuestionid.toString())
 
+
             //Firebaseへの書き込み用を設定
 //            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(fuserid.toString()).child(mQuestion.questionUid).child(AnswersPATH)
 //            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(F_userPATH).child(F_userquestionPATH)
             val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(answer_name).child(F_userquestionPATH)
             val answer_nameReference = dataBaseReference.child(FavoritePATH).child(answer_name)
+            //val answer = Answer.uid //(body, name, uid, answerUid,answerfavorable)
 
+            answerUid = answer_nameReference.toString()
+            mAnswer = Answer(body, name, usersid, answerUid,answerfavorable)
+            answer_name = mAnswer.answerUid.toString()
             Log.d("ANDROID","name = " + answer_name)
+
+
  //           Log.d("ANDROID","fuserIdRef = " + fuserIdReference.toString())
  //           Log.d("ANDROID","fuserIdQuestionRef = " + fuserIdQuestionRef.toString())
  //           Log.d("ANDROID","favorableUidAnswerRef = " + favorableUidAnswerRef.toString())
