@@ -11,9 +11,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.util.Log
 import android.widget.Button
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+
+import com.google.firebase.auth.AuthResult
+
 import java.util.HashMap
 
 
@@ -29,8 +33,11 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
     private var fuseridQuestionid : Int = 0
     private var mQuestion: Question? = null
 
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDataBaseReference: DatabaseReference
+
     private lateinit var answerUid: String
-    private lateinit var mAnswer: Answer
+
 
     private lateinit var mAnswerRef: DatabaseReference
 
@@ -73,40 +80,24 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
             }
             val body = mQustion.body
             val name = mQustion.name
-            val usersid: String? = mQuestion?.questionUid
 
-            var mAnswer: Answer? = null
+            val questionUid =mQustion.questionUid
 
-            var answerfavorable: String = mAnswer?.answerfavorable.toString()
 
-            var answer_name: String = mAnswer?.name.toString()
+            val userIdentification = FirebaseAuth.getInstance().currentUser!!.uid
 
-//            val map = dataSnapshot!!.value as Map<String, String>
+ //           var mAnswer: Answer? = null
 
-//            val answerUid = dataSnapshot!!.key ?: ""
+            var answer_name : String? = null
 
             //Firebaseからの読み込み用を設定
             val dataBaseReference = FirebaseDatabase.getInstance().reference
-            val fuserIdReference = dataBaseReference.child(FavoritePATH).child(fuserid.toString())
-            val fuserIdQuestionRef = dataBaseReference.child(F_userPATH).child(F_userquestionPATH).child(fuseridQuestionid.toString())
 
 
             //Firebaseへの書き込み用を設定
-//            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(fuserid.toString()).child(mQuestion.questionUid).child(AnswersPATH)
-//            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(F_userPATH).child(F_userquestionPATH)
-            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(answer_name).child(F_userquestionPATH)
-            val answer_nameReference = dataBaseReference.child(FavoritePATH).child(answer_name)
-            //val answer = Answer.uid //(body, name, uid, answerUid,answerfavorable)
+            answer_name = userIdentification
 
-            answerUid = answer_nameReference.toString()
-            mAnswer = Answer(body, name, usersid, answerUid,answerfavorable)
-            answer_name = mAnswer.answerUid.toString()
-            Log.d("ANDROID","name = " + answer_name)
-
-
- //           Log.d("ANDROID","fuserIdRef = " + fuserIdReference.toString())
- //           Log.d("ANDROID","fuserIdQuestionRef = " + fuserIdQuestionRef.toString())
- //           Log.d("ANDROID","favorableUidAnswerRef = " + favorableUidAnswerRef.toString())
+            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(answer_name)
 
             val bodyTextView = convertView.findViewById<View>(R.id.bodyTextView) as TextView
             bodyTextView.text = body
@@ -141,24 +132,36 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
 
                 Log.d("ANDROID","お気に入りボタンをクリックされた")
 
+
                 if (favorableIndicator.text=="お気に入り") {
                     favorableIndicator.text="超お気に入り"
-                    data["fuserquest"] = "お気に入りだぜ"
-                    Log.d("ANDROID","AnswerNameRef = " + answer_nameReference.toString())
 
- //                   Log.d("ANDROID","data[fuserquest] = " + data["fuserquest"].toString())
 
+                        data["fuserquest"] = "お気に入りだぜ"
+                        //Log.d("ANDROID","149 answername = " + answer_name)
+
+
+                        data["fuserquestUid"] = questionUid
+                        data["fuser"] = answer_name
+
+                    Log.d("ANDROID","147 questionUid = " + favorableUidAnswerRef.toString())
+                    Log.d("ANDROID","148 answer_name = " + answer_name)
                     favorableUidAnswerRef.push().setValue(data)
+
 
                 } else {
                     favorableIndicator.text="お気に入り"
+
                     data["fuserquest"] = "お気に入りちゃう"
-                    Log.d("ANDROID","AnswerNameRef = " + answer_nameReference.toString())
 
-  //                  Log.d("ANDROID","favorableUidAnswerRef = " + favorableUidAnswerRef.toString())
-  //                  Log.d("ANDROID","data[fuserquest] = " + data["fuserquest"].toString())
 
+                        data["fuserquestUid"] = questionUid
+                        data["fuser"] = answer_name
+
+                    Log.d("ANDROID","161 questionUid = " + favorableUidAnswerRef.toString())
+                    Log.d("ANDROID","162 answer_name = " + answer_name)
                     favorableUidAnswerRef.push().setValue(data)
+
                 }
 
             }
