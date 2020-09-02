@@ -1,8 +1,10 @@
 package jp.techacademy.takao.miyake.qa_app0817
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,22 +28,9 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
         private val TYPE_QUESTION = 0
         private val TYPE_ANSWER = 1
     }
-    private var mGenre: Int = 0
-    private var mLayoutInflater: LayoutInflater? = null
 
-    private var fuserid: Int = 0
-    private var fuseridQuestionid : Int = 0
-    private var mQuestion: Question? = null
+     private var mLayoutInflater: LayoutInflater? = null
 
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDataBaseReference: DatabaseReference
-
-    private lateinit var answerUid: String
-
-
-    private lateinit var mAnswerRef: DatabaseReference
-
-    private var dataSnapshot: DataSnapshot? = null
 
     init {
         mLayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -83,21 +72,25 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
 
             val questionUid =mQustion.questionUid
 
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                //ログインしていなければログイン画面に遷移させる
+                val intent = Intent(applicationContext, LoginActivity::class.java)
+                startActivity(intent)
+                return (convertView)
+            }
 
             val userIdentification = FirebaseAuth.getInstance().currentUser!!.uid
-
- //           var mAnswer: Answer? = null
-
             var answer_name : String? = null
 
             //Firebaseからの読み込み用を設定
             val dataBaseReference = FirebaseDatabase.getInstance().reference
 
-
             //Firebaseへの書き込み用を設定
             answer_name = userIdentification
 
-            val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(answer_name)
+            //val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH)
+           val favorableUidAnswerRef = dataBaseReference.child(FavoritePATH).child(answer_name).child(questionUid)
 
             val bodyTextView = convertView.findViewById<View>(R.id.bodyTextView) as TextView
             bodyTextView.text = body
@@ -124,44 +117,19 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
                 favorableIndicator.text="お気に入り"
             }else{
                 favorableIndicator.text="超お気に入り"
-
             }
-
 
             favorableIndicator.setOnClickListener {
 
-                Log.d("ANDROID","お気に入りボタンをクリックされた")
-
-
                 if (favorableIndicator.text=="お気に入り") {
                     favorableIndicator.text="超お気に入り"
-
-
-                        data["fuserquest"] = "お気に入りだぜ"
-                        //Log.d("ANDROID","149 answername = " + answer_name)
-
-
-                        data["fuserquestUid"] = questionUid
-                        data["fuser"] = answer_name
-
-                    Log.d("ANDROID","147 questionUid = " + favorableUidAnswerRef.toString())
-                    Log.d("ANDROID","148 answer_name = " + answer_name)
-                    favorableUidAnswerRef.push().setValue(data)
-
+                    data["fuserquest"] = "お気に入りだぜ"
+                    favorableUidAnswerRef.setValue(data)
 
                 } else {
                     favorableIndicator.text="お気に入り"
-
                     data["fuserquest"] = "お気に入りちゃう"
-
-
-                        data["fuserquestUid"] = questionUid
-                        data["fuser"] = answer_name
-
-                    Log.d("ANDROID","161 questionUid = " + favorableUidAnswerRef.toString())
-                    Log.d("ANDROID","162 answer_name = " + answer_name)
-                    favorableUidAnswerRef.push().setValue(data)
-
+                    favorableUidAnswerRef.setValue(data)
                 }
 
             }
