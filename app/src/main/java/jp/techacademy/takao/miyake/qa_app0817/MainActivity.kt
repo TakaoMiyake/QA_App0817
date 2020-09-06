@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import android.support.design.widget.Snackbar
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val answerfavorable : String? = temp["answerfavorable"]?:""
                     val answer = Answer(answerBody, answerName, answerUid, key, favorable )
                     answerArrayList.add(answer)
-                    Log.d("ANDROID","answerName= " + answerName.toString())
+                    //Log.d("ANDROID","answerName= " + answerName.toString())
                 }
             }
 
@@ -101,8 +100,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val answerUid = temp["uid"] ?: ""
                             val answerfavorable=temp["answerfavorable"]?:""
                             val answer = Answer(answerBody, answerName, answerUid, key,answerfavorable)
-
-                            Log.d("ANDROID","answerName= " + answerName.toString())
 
                             question.answers.add(answer)
 
@@ -146,15 +143,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val user = FirebaseAuth.getInstance().currentUser
 
             if (user == null) {
-                // ログインしていなければログイン画面に遷移させる
-                val intent = Intent(applicationContext, LoginActivity::class.java)
-                startActivity(intent)
-            } else {
-                // ジャンルを渡して質問作成画面を起動する
-                val intent = Intent(applicationContext, QuestionSendActivity::class.java)
-                intent.putExtra("genre", mGenre)
-                startActivity(intent)
-            }
+            // ログインしていなければログイン画面に遷移させる
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+        } else {
+            // ジャンルを渡して質問作成画面を起動する
+            val intent = Intent(applicationContext, QuestionSendActivity::class.java)
+            intent.putExtra("genre", mGenre)
+            startActivity(intent)
+        }
         }
 
         // ナビゲーションドロワーの設定

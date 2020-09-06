@@ -1,8 +1,10 @@
 package jp.techacademy.takao.miyake.qa_app0817
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +13,18 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.list_question_detail.*
 
 import java.util.ArrayList
 
 class QuestionsListAdapter(context: Context) : BaseAdapter() {
+
     private var mLayoutInflater: LayoutInflater
     private var mQuestionArrayList = ArrayList<Question>()
+    private lateinit var mAuth: FirebaseAuth
+
+
 
     init {
         mLayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -66,4 +73,6 @@ class QuestionsListAdapter(context: Context) : BaseAdapter() {
     fun setQuestionArrayList(questionArrayList: ArrayList<Question>) {
         mQuestionArrayList = questionArrayList
     }
+
+
 }

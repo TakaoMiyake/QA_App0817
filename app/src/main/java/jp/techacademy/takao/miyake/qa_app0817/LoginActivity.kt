@@ -18,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 
+import android.util.Log
+
 import java.util.HashMap
 
 class LoginActivity : AppCompatActivity() {
@@ -26,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mCreateAccountListener: OnCompleteListener<AuthResult>
     private lateinit var mLoginListener: OnCompleteListener<AuthResult>
     private lateinit var mDataBaseReference: DatabaseReference
+
+
 
     // アカウント作成時にフラグを立て、ログイン処理後に名前をFirebaseに保存する
     private var mIsCreateAccount = false
@@ -83,9 +87,11 @@ class LoginActivity : AppCompatActivity() {
                             saveName(data!!["name"] as String)
                         }
 
+
                         override fun onCancelled(firebaseError: DatabaseError) {}
                     })
                 }
+
 
                 // プログレスバーを非表示にする
                 progressBar.visibility = View.GONE
