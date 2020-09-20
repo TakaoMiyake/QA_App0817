@@ -19,10 +19,6 @@ class QuestionDetailActivity : AppCompatActivity() {
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
-    //lateinit var favorable: String
-    //lateinit var answerfavorable: String
-    //lateinit var favorableUidAnswer: String
-
 
 
     private val mEventListener = object : ChildEventListener {
@@ -41,10 +37,9 @@ class QuestionDetailActivity : AppCompatActivity() {
             val body = map["body"] ?: ""
             val name = map["name"] ?: ""
             val uid = map["uid"] ?: ""
-            val answerfavorable = map["answerfavorable"]?:""
-            val favorableUidAnswer = map["favorableUidAnswer"]
 
-            val answer = Answer(body, name, uid, answerUid,answerfavorable)
+
+            val answer = Answer(body, name, uid, answerUid)
             mQuestion.answers.add(answer)
             mAdapter.notifyDataSetChanged()
         }
@@ -119,21 +114,6 @@ class QuestionDetailActivity : AppCompatActivity() {
         listView.adapter = mAdapter
         mAdapter.notifyDataSetChanged()
 
-//        fab.setOnClickListener {
-//            // ログイン済みのユーザーを取得する
-//            val user = FirebaseAuth.getInstance().currentUser
-//
-//            if (user == null) {
-//                // ログインしていなければログイン画面に遷移させる
-//                val intent = Intent(applicationContext, LoginActivity::class.java)
-//                startActivity(intent)
-//            } else {
-//                // Questionを渡して回答作成画面を起動する
-//                val intent = Intent(applicationContext, AnswerSendActivity::class.java)
-//                intent.putExtra("question", mQuestion)
-//                startActivity(intent)
-//            }
-//        }
 
         val dataBaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
